@@ -1,0 +1,53 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        "indent": [
+            "error",
+            3
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "camelcase": 2,
+        "no-irregular-whitespace": 2,
+        "no-multiple-empty-lines": ["error", { "max": 1}],
+        "brace-style": [2, "1tbs"],
+        "max-params": [2, {"max" : 5}],
+        "max-lines-per-function": ["error", { "max": 50, "skipBlankLines" : true, "skipComments" : true }],
+        "vars-on-top" : 2,
+        "max-len" : [2, 80, 3],
+        "no-tabs" : 2,
+        "max-statements-per-line" : ["error", { "max": 1 }],
+        "object-curly-newline" : 2,
+        "space-infix-ops" : 2,
+        "keyword-spacing" : ["error", { "before": true, "after" : true}],
+        "comma-spacing" : ["error", { "before": false, "after": true }],
+        "semi-spacing": ["error", {"before": false, "after" : true}],
+        "space-before-blocks" : 2,
+        "space-in-parens": ["error", "never"],
+        "space-before-function-paren": ["error", "never"],
+        "eqeqeq": ["error", "smart"],
+        "no-unused-vars" : 1
+    },
+    "globals": {
+        "require": true,
+        "process": true
+    }
+}
