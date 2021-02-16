@@ -146,31 +146,27 @@ router.post('/', function(req, res) {
       function(cb) { // Check that pass, email, lastName, and role not empty
          if (vld.hasDefinedFields(body, ["password", "email", "lastName", 
           "role"], cb) && 
-          vld.chain(body.firstName.length <= 30, Tags.badValue, 
-          ["firstName"])
+          vld.chain(!body.firstName || body.firstName.length <= 30, 
+          Tags.badValue, ["firstName"])
           .chain(body.lastName.length <= 50, Tags.badValue, 
           ["lastName"])
+          .chain(body.termsAccepted || admin, Tags.noTerms, null)
           .chain(body.role === 0 || body.role === 1, Tags.badValue,
-          ["role"]).check(body.email.length <= 150, Tags.badValue, ["email"], 
+          ["role"])
+          .chain((body.role === 1 && admin) || body.role === 0 || 
+          (body.role !== 0 && body.role !== 1) , Tags.forbiddenRole, null)
+          .check(body.email.length <= 150, Tags.badValue, ["email"], 
           cb)) {
             cnn.chkQry('select * from Person where email = ?', body.email, cb);
          }
       },
-      // function(cb) { // Check properties and search for Email duplicates
-      //    if (vld.hasFields(body, ["email", "password", "role"], cb) &&
-      //     vld.chain(body.role === 0 || admin, Tags.noPermission)
-      //     .chain(body.termsAccepted || admin, Tags.noTerms)
-      //     .check(body.role >= 0, Tags.badValue, ["role"], cb)) {
-      //       cnn.chkQry('select * from Person where email = ?', body.email, cb);
-      //    }
-      // },
-      // //function(whatever was after the error parameter from prior callback, cb)
-      // function(existingPrss, fields, cb) {  // If no dups, insert new Person
-      //    if (vld.check(!existingPrss.length, Tags.dupEmail, null, cb)) {
-      //       body.termsAccepted = body.termsAccepted && new Date();
-      //       cnn.chkQry('insert into Person set ?', [body], cb);
-      //    }
-      // },
+      //function(whatever was after the error parameter from prior callback, cb)
+      function(existingPrss, fields, cb) {  // If no dups, insert new Person
+         if (vld.check(!existingPrss.length, Tags.dupEmail, null, cb)) {
+            body.termsAccepted = body.termsAccepted && new Date();
+            cnn.chkQry('insert into Person set ?', [body], cb);
+         }
+      },
       function(result, fields, cb) { // Return location of inserted Person
          res.location(router.baseURL + '/' + result.insertId).end();
          cb();
