@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a50ca9d4-f416-4161-8159-45e2ea5465e7" name="Default Changelist" comment="" />
+    <list default="true" id="a50ca9d4-f416-4161-8159-45e2ea5465e7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Src/Account/Ssns.js" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Account/Ssns.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Src/Validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Validator.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="JsFlowSettings">
     <service-enabled>true</service-enabled>
@@ -14,6 +21,7 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectId" id="1oJ2Rgx6qJEEf0UM906P77gjTYP" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -28,17 +36,6 @@
     <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="main.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/Src/main.js" working-dir="$PROJECT_DIR$/Src">
       <method v="2" />
     </configuration>
@@ -60,6 +57,7 @@
       <workItem from="1612990453863" duration="13000" />
       <workItem from="1612990476274" duration="2000" />
       <workItem from="1612990501840" duration="197000" />
+      <workItem from="1613105559091" duration="14000" />
     </task>
     <servers />
   </component>

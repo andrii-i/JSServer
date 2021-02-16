@@ -6,14 +6,17 @@ var {Session, router} = require("./Session.js");
 var Validator = require("./Validator.js");
 var CnnPool = require("./CnnPool.js");
 var async = require("async");
-var app = express();
+// app returned by express() is in fact a JavaScript Function, designed to be 
+// passed to Node’s HTTP servers as a callback to handle requests. 
+var app = express(); 
 
 // Static paths to be served like index.html and all client side js
-// eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
 
 // Partially complete handler for CORS.
-app.use(function(req, res, next) {
+app.use(function(req, res, next) { // mounts middleware function w/o path
+                                   // would be executed for every request 
+                                   // to the app
    console.log("Handling " + req.path + "/" + req.method);
    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
    res.header("Access-Control-Allow-Credentials", true);

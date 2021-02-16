@@ -22,14 +22,14 @@ router.post('/', function(req, res) {
    var cnn = req.cnn;
 
    cnn.chkQry('select * from Person where email = ?', [req.body.email],
-   function(err, result) {
-      if (req.validator.check(result.length && result[0].password ===
+      function(err, result) {
+         if (req.validator.check(result.length && result[0].password ===
        req.body.password, Tags.badLogin)) {
-         ssn = new Session(result[0], res);
-         res.location(router.baseURL + '/' + ssn.id).end();
-      }
-      cnn.release();
-   });
+            ssn = new Session(result[0], res);
+            res.location(router.baseURL + '/' + ssn.id).end();
+         }
+         cnn.release();
+      });
 });
 
 router.delete('/id', function(req, res) {

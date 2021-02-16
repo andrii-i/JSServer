@@ -1,13 +1,13 @@
 // Create a validator that draws its session from |req|, and reports
 // errors on |res|
 var Validator = function(req, res) {
-   this.errors = [];   // Array of error objects having tag and params
-   this.session = req.session;
-   this.res = res;
+   this.errors = [];   // Accumulated error objects[] having tag and params
+   this.session = req.session; //for administrative checking where needed
+   this.res = res; // To provide response to the user
 };
 
-// List of errors, and their corresponding resource string tags
-Validator.Tags = {
+// "Static" list of errors, and their corresponding resource string tags
+Validator.Tags = { 
    noLogin: "noLogin",              // No active session/login
    noPermission: "noPermission",    // Login lacks permission.
    missingField: "missingField",    // Field missing. Params[0] is field name
@@ -18,6 +18,7 @@ Validator.Tags = {
    noTerms: "noTerms",              // Acceptance of terms is required.
    forbiddenRole: "forbiddenRole",  // Cannot set to this role
    noOldPwd: "noOldPwd",            // Password change requires old password
+   oldPwdMismatch: "oldPwdMismatch",
    dupTitle: "dupTitle",            // Title duplicates an existing cnv title
    queryFailed: "queryFailed",
    forbiddenField: "forbiddenField"
@@ -37,20 +38,20 @@ Validator.Tags = {
 // leaving the caller to cover the "good" case only.
 Validator.prototype.check = function(test, tag, params, cb) {
    if (!test)
-      this.errors.push({tag: tag, params: params});
+      this.errors.push({tag: tag, params: params}); // Push error object 
 
-   if (this.errors.length) {
-      if (this.res) {
+   if (this.errors.length) { // If errors is not empty
+      if (this.res) { // If response object is present and was not e.g. null-ed
          if (this.errors[0].tag === Validator.Tags.noPermission)
-            this.res.status(403).end();
+            this.res.status(403).end(); // Close response with 403 code
          else
-            this.res.status(400).json(this.errors);
+            this.res.status(400).json(this.errors); // Close w 400 and errors
          this.res = null;   // Preclude repeated closings
       }
-      if (cb)
-         cb(this);
+      if (cb) 
+         cb(this); // Callback with truth-y itself as a 1st (error) argument
    }
-   return !this.errors.length;
+   return !this.errors.length; // Always returns number of errors
 };
 
 // Somewhat like |check|, but designed to allow several chained checks
@@ -59,19 +60,19 @@ Validator.prototype.chain = function(test, tag, params) {
    if (!test) {
       this.errors.push({tag: tag, params: params});
    }
-   return this;
+   return this; // Returns Validator to be able to continue chaining
 };
 
 Validator.prototype.checkAdmin = function(cb) {
    return this.check(this.session && this.session.isAdmin(),
-    Validator.Tags.noPermission, null, cb);
+      Validator.Tags.noPermission, null, cb);
 };
 
 // Validate that AU is the specified person or is an admin
 Validator.prototype.checkPrsOK = function(prsId, cb) {
    return this.check(this.session &&
     (this.session.isAdmin() || this.session.id === prsId),
-    Validator.Tags.noPermission, null, cb);
+   Validator.Tags.noPermission, null, cb);
 };
 
 // Check presence of truthy property in |obj| for all fields in fieldList
@@ -80,6 +81,20 @@ Validator.prototype.hasFields = function(obj, fieldList, cb) {
 
    fieldList.forEach(function(name) {
       self.chain(obj.hasOwnProperty(name), Validator.Tags.missingField, [name]);
+   });
+
+   return this.check(true, null, null, cb);
+};
+
+// Check presence of truthy property in |obj| for all fields in fieldList
+Validator.prototype.hasDefinedFields = function(obj, fields, fieldNames, cb) {
+   var self = this;
+   var i = 0;
+
+   fields.forEach(function(field) {
+      self.chain(obj.hasOwnProperty(fieldNames[i]) && field, 
+       Validator.Tags.missingField, [fieldNames[i]]);
+      i++;
    });
 
    return this.check(true, null, null, cb);

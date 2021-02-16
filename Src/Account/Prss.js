@@ -126,7 +126,8 @@ router.get('/', function(req, res) {
    };
 
    if (email)
-      req.cnn.chkQry('select id, email from Person where email = ?', [email], handler);
+      req.cnn.chkQry('select id, email from Person where email = ?', [email], 
+       handler);
    else
       req.cnn.chkQry('select id, email from Person', null, handler);
 });
@@ -143,20 +144,26 @@ router.post('/', function(req, res) {
 
    async.waterfall([
       function(cb) { // Check properties and search for Email duplicates
-         if (vld.hasFields(body, ["email", "password", "role"], cb) &&
-          vld.chain(body.role === 0 || admin, Tags.noPermission)
-          .chain(body.termsAccepted || admin, Tags.noTerms)
-          .check(body.role >= 0, Tags.badValue, ["role"], cb)) {
+         if (vld.hasDefinedFields(body, [body.email, body.lastName, body.role, 
+          body.password], ["email", "lastName", "role", "password"], cb)) {
             cnn.chkQry('select * from Person where email = ?', body.email, cb);
          }
       },
-      //function(whatever was after the error parameter from prior callback, cb)
-      function(existingPrss, fields, cb) {  // If no dups, insert new Person
-         if (vld.check(!existingPrss.length, Tags.dupEmail, null, cb)) {
-            body.termsAccepted = body.termsAccepted && new Date();
-            cnn.chkQry('insert into Person set ?', [body], cb);
-         }
-      },
+      // function(cb) { // Check properties and search for Email duplicates
+      //    if (vld.hasFields(body, ["email", "password", "role"], cb) &&
+      //     vld.chain(body.role === 0 || admin, Tags.noPermission)
+      //     .chain(body.termsAccepted || admin, Tags.noTerms)
+      //     .check(body.role >= 0, Tags.badValue, ["role"], cb)) {
+      //       cnn.chkQry('select * from Person where email = ?', body.email, cb);
+      //    }
+      // },
+      // //function(whatever was after the error parameter from prior callback, cb)
+      // function(existingPrss, fields, cb) {  // If no dups, insert new Person
+      //    if (vld.check(!existingPrss.length, Tags.dupEmail, null, cb)) {
+      //       body.termsAccepted = body.termsAccepted && new Date();
+      //       cnn.chkQry('insert into Person set ?', [body], cb);
+      //    }
+      // },
       function(result, fields, cb) { // Return location of inserted Person
          res.location(router.baseURL + '/' + result.insertId).end();
          cb();
@@ -170,14 +177,40 @@ router.post('/', function(req, res) {
 router.put('/:id', function(req, res) {
    var vld = req.validator;
    var ssn = req.session;
+   var body = req.body;
+   var cnn = req.cnn;
 
    async.waterfall([
    cb => {
-      if (vld.checkPrsOK(req.params.id, cb) &&
-
+      if (vld.checkPrsOK(req.params.id, cb) && 
+       vld.chain(!(role in body) || ssn.isAdmin(), Tags.badValue, ["role"])
+       // .hasOnlyFields(body, okFields)
+       // .checkFieldsLength(body, ...)
+       .chain(!(password in body) || req.body.oldPassword || ssn.isAdmin, 
+       Tags.noOldPwd) 
+       .check(!(password in body) || req.body.password, Tags.badValue, 
+       ["password"], cb)) {
+         cnn.chkQry("select * from Person where id = ?", [red.param.id], cb);
+      }
+   },
+   (foundPrs, fields, cb) => {
+      if (vld.check(foundPrs.length, Tags.notFound, null, cb) &&
+       vld.check(ssn.isAdmin() || !password in body)
+       || req.body.oldPassword === foundPrs[0].password,
+       Tags.oldPwdMismatch, null, cb) {
+         delete body.oldPassword;
+         cnn.chkQry("update Person set ? where id = ?",
+         [body, req.params.id], cb);
+      } 
+   },
+   (updRes, fields, cb) => {
+      res.end();
+      cb();
+   }, 
    ],
    err => {
-   })
+      cnn.release();
+   });
 });
 
 router.get('/:id', function(req, res) {

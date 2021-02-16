@@ -8,10 +8,6 @@
     "parserOptions": {
         "ecmaVersion": 12
     },
-    "plugins": [
-        "only-warn"
-    ],
-    
     "rules": {
         "indent": [
             "warn",
@@ -34,7 +30,6 @@
         "vars-on-top" : 1,
         "max-len" : [1, 80, 3],
         "no-tabs" : 1,
-        "no-undef" : 1,
         "max-statements-per-line" : [1, { "max": 1 }],
         "object-curly-newline" : 1,
         "space-infix-ops" : 1,
