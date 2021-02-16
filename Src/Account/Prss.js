@@ -144,8 +144,9 @@ router.post('/', function(req, res) {
 
    async.waterfall([
       function(cb) { // Check properties and search for Email duplicates
-         if (vld.hasDefinedFields(body, [body.email, body.lastName, body.role, 
-          body.password], ["email", "lastName", "role", "password"], cb)) {
+         if (vld.hasDefinedFields(body, [body.password, body.email, 
+          body.lastName, body.role], ["password", "email", "lastName", "role"], 
+          cb)) {
             cnn.chkQry('select * from Person where email = ?', body.email, cb);
          }
       },

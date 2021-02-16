@@ -91,9 +91,9 @@ Validator.prototype.hasDefinedFields = function(obj, fields, fieldNames, cb) {
    var self = this;
    var i = 0;
 
-   fields.forEach(function(field) {
-      self.chain(obj.hasOwnProperty(fieldNames[i]) && field, 
-       Validator.Tags.missingField, [fieldNames[i]]);
+   fieldNames.forEach(function(name) {
+      self.chain(obj.hasOwnProperty(name) && fields[i], 
+       Validator.Tags.missingField, [name]);
       i++;
    });
 
