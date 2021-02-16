@@ -87,17 +87,19 @@ Validator.prototype.hasFields = function(obj, fieldList, cb) {
 };
 
 // Check presence of truthy property in |obj| for all fields in fieldList
-Validator.prototype.hasDefinedFields = function(obj, fields, fieldNames, cb) {
+Validator.prototype.hasDefinedFields = function(obj, fieldNames, cb) {
    var self = this;
    var i = 0;
-
-   fieldNames.forEach(function(name) {
-      self.chain(obj.hasOwnProperty(name) && fields[i], 
-       Validator.Tags.missingField, [name]);
-      i++;
-   });
-
+   for (i = 0; i < fieldNames.length; i++) {
+      self.chain(obj.hasOwnProperty(fieldNames[i]) && 
+       Validator.hasValue(obj[fieldNames[i]]), Validator.Tags.missingField, 
+       [fieldNames[i]]);
+   }
    return this.check(true, null, null, cb);
+};
+
+Validator.hasValue = function(field) {
+   return (field !== null && field !== "" && field !== undefined);
 };
 
 module.exports = Validator;

@@ -143,9 +143,15 @@ router.post('/', function(req, res) {
    body.whenRegistered = new Date();
 
    async.waterfall([
-      function(cb) { // Check properties and search for Email duplicates
-         if (vld.hasDefinedFields(body, [body.password, body.email, 
-          body.lastName, body.role], ["password", "email", "lastName", "role"], 
+      function(cb) { // Check that pass, email, lastName, and role not empty
+         if (vld.hasDefinedFields(body, ["password", "email", "lastName", 
+          "role"], cb) && 
+          vld.chain(body.firstName.length <= 30, Tags.badValue, 
+          ["firstName"])
+          .chain(body.lastName.length <= 50, Tags.badValue, 
+          ["lastName"])
+          .chain(body.role === 0 || body.role === 1, Tags.badValue,
+          ["role"]).check(body.email.length <= 150, Tags.badValue, ["email"], 
           cb)) {
             cnn.chkQry('select * from Person where email = ?', body.email, cb);
          }
