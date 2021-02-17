@@ -64,6 +64,7 @@ router.post('/', function(req, res) {
       function(existingPrss, fields, cb) {  // If no dups, insert new Person
          if (vld.check(!existingPrss.length, Tags.dupEmail, null, cb)) {
             body.termsAccepted = body.termsAccepted && new Date();
+            body.whenRegistered = body.termsAccepted;
             cnn.chkQry('insert into Person set ?', [body], cb);
          }
       },
