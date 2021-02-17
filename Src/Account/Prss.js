@@ -34,7 +34,8 @@ router.get('/', function(req, res) {
       res.json([]);
       req.cnn.release();
    } else if (!admin && email) {
-      req.cnn.chkQry('SELECT id, email FROM Person WHERE email LIKE ? AND email = ?', [email.concat('%'), ssnEmail], handler);
+      req.cnn.chkQry('SELECT id, email FROM Person WHERE email LIKE ? \
+       AND email = ?', [email.concat('%'), ssnEmail], handler);
    }
 });
 
