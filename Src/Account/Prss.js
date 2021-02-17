@@ -7,129 +7,35 @@ var router = Express.Router({caseSensitive: true});
 
 router.baseURL = '/Prss';
 
-/* Ugly versions
-//.../Prss?email=cstaley
-router.get('/', function(req, res) {
-   var email = req.session.isAdmin() && req.query.email ||
-    !req.session.isAdmin() && req.session.email;
-   var cnnConfig = {
-      host     : 'localhost',
-      user     : 'cstaley',
-      password : 'CHSpw',
-      database : 'cstaley'
-   };
-
-   var cnn = mysql.createConnection(cnnConfig);
-
-   if (email)
-      cnn.query('select id, email from Person where email = ?', [email],
-      function(err, result) {
-         if (err) {
-            res.status(500).json("Failed query");
-         }
-         else {
-            res.status(200).json(result);
-         }
-         cnn.destroy();
-      });
-   else
-      cnn.query('select id, email from Person',
-      function(err, result) {
-         if (err) {
-            res.status(500).json("Failed query");
-         }
-         else {
-            res.status(200).json(result);
-         }
-         cnn.destroy();
-      });
-});
-
-// Non-waterfall, non-validator, non-db automation version
-router.post('/', function(req, res) {
-   var body = req.body;
-   var admin = req.session && req.session.isAdmin();
-   var errorList = [];
-   var qry;
-   var noPerm;
-   var cnnConfig = {
-      host     : '127.0.0.1',
-      user     : 'cstaley',
-      password : 'CASpw',
-      database : 'CHSdb'
-   };
-
-   if (admin && !body.password)
-      body.password = "*";                       // Blocking password
-   body.whenRegistered = new Date();
-
-   // Check for fields
-   if (!body.hasOwnProperty('email'))
-      errorList.push({tag: "missingField", params: "email"});
-   if (!body.hasOwnProperty('password'))
-      errorList.push({tag: "missingField", params: "password"});
-   if (!body.hasOwnProperty('role'))
-      errorList.push({tag: "missingField", params: "role"});
-
-   // Do these checks only if all fields are there
-   if (!errorList.length) {
-      noPerm = body.role === 1 && !admin;
-      if (!body.termsAccepted)
-         errorList.push({tag: "noTerms"});
-      if (body.role < 0 || body.role > 1)
-         errorList.push({tag: "badVal", param: "role"});
-   }
-
-   // Post errors, or proceed with data fetches
-   if (noPerm)
-      res.status(403).end();
-   else if (errorList.length)
-      res.status(400).json(errorList);
-   else {
-      var cnn = mysql.createConnection(cnnConfig);
-
-      // Find duplicate Email if any.
-      cnn.query(qry = 'select * from Person where email = ?', body.email,
-      function(err, dupEmail) {
-         if (err) {
-            cnn.destroy();
-            res.status(500).json("Failed query " + qry);
-         }
-         else if (dupEmail.length) {
-            res.status(400).json({tag: "dupEmail"});
-            cnn.destroy();
-         }
-         else { // No duplicate, so make a new Person
-            body.termsAccepted = body.termsAccepted && new Date();
-            cnn.query(qry = 'insert into Person set ?', body,
-            function(err, insRes) {
-               cnn.destroy();
-               if (err)
-                  res.status(500).json("Failed query " + qry);
-               else
-                  res.location(router.baseURL + '/' + insRes.insertId).end();
-            });
-          }
-      });
-   }
-});
-*/
-
 /* Much nicer versions*/
 router.get('/', function(req, res) {
-   var email = req.session.isAdmin() && req.query.email ||
-    !req.session.isAdmin() && req.session.email;
+/*    var email = req.session.isAdmin() && req.query.email ||
+    !req.session.isAdmin() && req.session.email; */
+   var admin = req.session.isAdmin();
+   var email = req.query.email;
+   var ssnEmail = req.session.email;
 
    var handler = function(err, prsArr, fields) {
       res.json(prsArr);
       req.cnn.release();
    };
 
-   if (email)
+/*    if (email)
       req.cnn.chkQry('select id, email from Person where email = ?', [email], 
        handler);
    else
+      req.cnn.chkQry('select id, email from Person', null, handler); */
+   if (admin && !email) {
       req.cnn.chkQry('select id, email from Person', null, handler);
+   } else if (admin && email) {
+      req.cnn.chkQry('SELECT id, email FROM Person WHERE email LIKE ?', 
+       [email.concat('%')], handler);
+   } else if (!admin && !email) {
+      res.json([]);
+      req.cnn.release();
+   } else if (!admin && email) {
+      req.cnn.chkQry('SELECT id, email FROM Person WHERE email LIKE ? AND email = ?', [email.concat('%'), ssnEmail], handler);
+   }
 });
 
 router.post('/', function(req, res) {
@@ -150,11 +56,12 @@ router.post('/', function(req, res) {
           Tags.badValue, ["firstName"])
           .chain(body.lastName.length <= 50, Tags.badValue, 
           ["lastName"])
-          .chain(body.termsAccepted || admin, Tags.noTerms, null)
+          .chain(body.password.length <= 50, Tags.badValue, ["password"])
           .chain(body.role === 0 || body.role === 1, Tags.badValue,
           ["role"])
+          .chain(body.termsAccepted || admin, Tags.noTerms, null)
           .chain((body.role === 1 && admin) || body.role === 0 || 
-          (body.role !== 0 && body.role !== 1) , Tags.forbiddenRole, null)
+          (body.role !== 0 && body.role !== 1), Tags.forbiddenRole, null)
           .check(body.email.length <= 150, Tags.badValue, ["email"], 
           cb)) {
             cnn.chkQry('select * from Person where email = ?', body.email, cb);
