@@ -2,15 +2,12 @@ var Express = require('express');
 var Tags = require('../Validator.js').Tags;
 var async = require('async');
 var mysql = require('mysql');
-
 var router = Express.Router({caseSensitive: true});
 
 router.baseURL = '/Prss';
 
 /* Much nicer versions*/
 router.get('/', function(req, res) {
-/*    var email = req.session.isAdmin() && req.query.email ||
-    !req.session.isAdmin() && req.session.email; */
    var admin = req.session.isAdmin();
    var email = req.query.email;
    var ssnEmail = req.session.email;
@@ -20,11 +17,6 @@ router.get('/', function(req, res) {
       req.cnn.release();
    };
 
-/*    if (email)
-      req.cnn.chkQry('select id, email from Person where email = ?', [email], 
-       handler);
-   else
-      req.cnn.chkQry('select id, email from Person', null, handler); */
    if (admin && !email) {
       req.cnn.chkQry('select id, email from Person', null, handler);
    } else if (admin && email) {
