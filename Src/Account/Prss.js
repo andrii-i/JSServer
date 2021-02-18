@@ -39,7 +39,7 @@ router.post('/', function(req, res) {
 
    if (admin && !body.password)
       body.password = "*";                     
-   body.whenRegistered = new Date(); // why Date.now() doesn't work?
+   body.whenRegistered = Date.now();
 
    async.waterfall([
       function(cb) { 
@@ -66,7 +66,7 @@ router.post('/', function(req, res) {
             if (admin && !body.termsAccepted) {
                body.termsAccepted = null;
             } else {
-               body.termsAccepted = body.termsAccepted && new Date();
+               body.termsAccepted = body.termsAccepted && Date.now();
                body.whenRegistered = body.termsAccepted;
             }
             cnn.chkQry('insert into Person set ?', [body], cb);

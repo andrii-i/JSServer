@@ -1,0 +1,8535 @@
+{
+	"info": {
+		"_postman_id": "a77a9d0a-a1db-451c-b777-df1738c1df7b",
+		"name": "project2_tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1 Nuke",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Nuke",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/DB",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"DB"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "2 Registration Prss POST errors non-AU",
+			"item": [
+				{
+					"name": "Register student unreadable body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 500);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "11",
+							"options": {
+								"raw": {
+									"language": "javascript"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student No Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkNumErrors(pm, 4);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Empty Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkNumErrors(pm, 4);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Email Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"email\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : \"0\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Email Absent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"email\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : \"0\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Role Absent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Role Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : \"\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Role Null",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : null,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Pass Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"\",\n    \"role\"     : \"0\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Pass Absent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"role\"     : \"0\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Lastname Absent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"lastName\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : \"0\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Lastname Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"lastName\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"\",\n    \"password\" : \"passwordA\",\n    \"role\"     : \"0\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"email\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long First",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"firstName\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long First AND Long Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkNumErrors(pm, 2);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"firstName\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\" : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long Last",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"lastName\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long Pass",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Acceptance False",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"noTerms\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"UserB@domainB\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": false\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Acceptance Null",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"noTerms\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"UserB@domainB\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": null\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Acceptance Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"noTerms\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"UserB@domainB\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": null\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Acceptance Absent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"noTerms\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"UserB@domainB\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin w/o Admin AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"forbiddenRole\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 1,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin w/o Admin AU Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 2,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin w/o Admin AU Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 82,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register empty password as non-admin non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student ZZ Forbidden Field in Body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 500);\r",
+									"pm.test(pm.expect(pm.response.json()).to.equal(\"Failed query insert into Person set ?\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserZZ@domainA\",\n    \"firstName\": \"FirstZZ\",\n    \"lastName\" : \"LastZZ\",\n    \"password\" : \"passwordZZ\",\n    \"role\"     : 0,\n    \"termsAccepted\": true,\n    \"oddField\" : \"someValue\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "3 Create ABC",
+			"item": [
+				{
+					"name": "Register Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkAndSavePost(pm, \"StdAId\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student Long First Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"firstName\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student A Duplicate Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"dupEmail\");",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student B",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkAndSavePost(pm, \"StdBId\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserB@domainA\",\n    \"firstName\": \"FirstB\",\n    \"lastName\" : \"LastB\",\n    \"password\" : \"passwordB\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student C",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkAndSavePost(pm, \"StdCId\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserC@domainA\",\n    \"firstName\": \"FirstC\",\n    \"lastName\" : \"LastC\",\n    \"password\" : \"passwordC\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "URL not described in rest spec non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserA@domainA\",\n    \"firstName\": \"FirstA\",\n    \"lastName\" : \"LastA\",\n    \"password\" : \"passwordA\",\n    \"role\"     : 1,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/SomeStuff",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"SomeStuff"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "4 Prss GET /id, ?email= non-AU",
+			"item": [
+				{
+					"name": "Get Info on student A ID Non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Info on student A, B, C Email Non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=User",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "User"
+								}
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "5.1 AU-user GET email",
+			"item": [
+				{
+					"name": "Login as Student A Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user common email prefix request Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   var prs3 = body[0];",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(prs3.id).to.equal(parseInt(pm.collectionVariables.get(\"StdAId\")));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=User",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "User"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user other user email request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Empty array is returned\", () => {",
+									"   pm.expect(pm.response.json().length).to.equal(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=UserB@domainA",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "UserB@domainA"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user email that DNE request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Empty array is returned\", () => {",
+									"   pm.expect(pm.response.json().length).to.equal(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=UserZ@domainA",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "UserZ@domainA"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Reach out to non-existent resource User-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 404);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/someresource",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"someresource"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5.2 AU-user get ID",
+			"item": [
+				{
+					"name": "Login as Student A Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user ID request on himself",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A (requesting user himself) is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   var prs = body[0];",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(prs.id).to.equal(2);",
+									"   pm.expect(prs.email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(prs.firstName).to.equal(\"FirstA\");",
+									"   pm.expect(prs.lastName).to.equal(\"LastA\");",
+									"   pm.expect(prs.role).to.equal(0);",
+									"   pm.expect(prs.whenRegistered).to.be.greaterThan(0);",
+									"   pm.expect(prs.termsAccepted).to.be.equal(prs.whenRegistered);",
+									"   pm.expect(prs.password).to.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user ID request on other user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdBId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdBId}}"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user ID request on NA user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/987",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"987"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as AU-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns ID of other user as an AU-User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 404);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"3"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5_REDUX AU-user and NON-AU Prss Get prsID personal info requests",
+			"item": [
+				{
+					"name": "Create Convo 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 1\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete own Convo 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "As an owner rename convo to the same name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 1 Duplicate Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"dupTitle\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Ssns/{{curLogin}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"{{curLogin}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on message 1 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								""
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all msg 1 likes Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Like messageA Id 1 Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try getting all convos Copy 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-Auth user sends msg to convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageC\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get and examine convo 2 by convo ID Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user change other people's convo Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"newTitle\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get convo while there are none by owner ID Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs?owner=4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							],
+							"query": [
+								{
+									"key": "owner",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try nuke Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/DB",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"DB"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Try deleting other peoples convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU try to create convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 1\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU attempt to access all convos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "NON-AU Try to DELETE other person",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdBId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdBId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get prss/prsId/Msgs while Non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as non-AU user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Change own info including password Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordA\",\n    \"password\" : \"passwordA2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU Get Info on student A ID ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU Get Info on student A ID  Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU try to update password to empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\" : \"\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ssns ID as Non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"3"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "5 AU-user and NON-AU Prss Get prsID personal info requests Copy",
+			"item": [
+				{
+					"name": "Login as Student A Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 1\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete own Convo 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "As an owner rename convo to the same name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 1 Duplicate Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"dupTitle\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Using URL not described in rest spec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 404);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Random",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Random"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user common email prefix request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   var prs3 = body[0];",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(prs3.id).to.equal(parseInt(pm.collectionVariables.get(\"StdAId\")));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=User",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "User"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user other user email request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Empty array is returned\", () => {",
+									"   pm.expect(pm.response.json().length).to.equal(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=UserB@domainA",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "UserB@domainA"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user email that DNE request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Empty array is returned\", () => {",
+									"   pm.expect(pm.response.json().length).to.equal(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=UserZ@domainA",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "UserZ@domainA"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user ID request on himself",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A (requesting user himself) is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   var prs = body[0];",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(prs.id).to.equal(2);",
+									"   pm.expect(prs.email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(prs.firstName).to.equal(\"FirstA\");",
+									"   pm.expect(prs.lastName).to.equal(\"LastA\");",
+									"   pm.expect(prs.role).to.equal(0);",
+									"   pm.expect(prs.whenRegistered).to.be.greaterThan(0);",
+									"   pm.expect(prs.termsAccepted).to.be.equal(prs.whenRegistered);",
+									"   pm.expect(prs.password).to.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user ID request on other user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdBId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdBId}}"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as AU-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns ID of other user as an AU-User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 404);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"3"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Ssns/{{curLogin}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"{{curLogin}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on message 1 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								""
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all msg 1 likes Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Like messageA Id 1 Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try getting all convos Copy 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-Auth user sends msg to convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageC\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get and examine convo 2 by convo ID Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user change other people's convo Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"newTitle\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get convo while there are none by owner ID Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs?owner=4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							],
+							"query": [
+								{
+									"key": "owner",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try nuke Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/DB",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"DB"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Try deleting other peoples convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU try to create convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 1\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU attempt to access all convos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "NON-AU Try to DELETE other person",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdBId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdBId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get prss/prsId/Msgs while Non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as non-AU user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Change own info including password Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordA\",\n    \"password\" : \"passwordA2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU Get Info on student A ID ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU Get Info on student A ID  Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);\r",
+									"checkIfBodyIsEmpty(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info on Prs 3 Non-AU"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-AU try to update password to empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\" : \"\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ssns ID as Non-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"3"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "6 Prss/prsID PUT AU-user, non-AU",
+			"item": [
+				{
+					"name": "Login as Student A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to change password to empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordA\",\n    \"password\" : \"\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to change password to null",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordA\",\n    \"password\" : null\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to change password to null Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordA\",\n    \"password\" : null\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to DELETE yourself",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to DELETE other person",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdBId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdBId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try changing password without providing old one",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"noOldPwd\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"password\" : \"newPassword\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to change own role to 1 (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"role\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\": 1\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to change TermsAccepted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"forbiddenField\", [\"termsAccepted\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"termsAccepted\": false\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try to change WhenRegistered",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"forbiddenField\", [\"whenRegistered\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"whenRegistered\": 1\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Change own info including password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordA\",\n    \"password\" : \"passwordA2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student A New Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);",
+									"pm.collectionVariables.set(\"stdALogin\", ",
+									"   pm.collectionVariables.get(\"curLogin\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA2\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user ID request on himself Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A (requesting user himself) is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   var prs = body[0];",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(prs.id).to.equal(2);",
+									"   pm.expect(prs.email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(prs.firstName).to.equal(\"FirstA2\");",
+									"   pm.expect(prs.lastName).to.equal(\"LastA2\");",
+									"   pm.expect(prs.role).to.equal(0);",
+									"   pm.expect(prs.whenRegistered).to.be.greaterThan(0);",
+									"   pm.expect(prs.termsAccepted).to.be.equal(prs.whenRegistered);",
+									"   pm.expect(prs.password).to.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Change other persons info ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstA2\",\n    \"lastName\" : \"LastA2\",\n    \"oldPassword\" : \"passwordB\",\n    \"password\" : \"passwordC\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdBId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdBId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try nuke",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/DB",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"DB"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": " Login errors Copy",
+			"item": [
+				{
+					"name": "Login as Student A Bad Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badLogin\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordB\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student A Old Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badLogin\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "7 Ssns",
+			"item": [
+				{
+					"name": "Login as Student B",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserB@domainA\", \"password\": \"passwordB\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns ID of yourself as an AU-User ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"3"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as AU-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ssns ID of other user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"2"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as an Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);\r",
+									"\r",
+									"pm.test(\"Correct number of sessions and details is returned to Admin\", () => {\r",
+									"   var body = pm.response.json();\r",
+									"\r",
+									"   var prs0 = body[0];\r",
+									"   pm.expect(body.length).to.equal(4);\r",
+									"   pm.expect(prs0.id).to.equal(1);\r",
+									"   pm.expect(prs0.prsId).to.equal(2);\r",
+									"   pm.expect(prs0.loginTime).to.be.greaterThan(0);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ssns ID as an Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"3"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as an Admin and check one was deleted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);\r",
+									"\r",
+									"pm.test(\"Correct number of sessions and details is returned to Admin\", () => {\r",
+									"   var body = pm.response.json();\r",
+									"\r",
+									"   var prs0 = body[0];\r",
+									"   pm.expect(body.length).to.equal(3);\r",
+									"   pm.expect(prs0.id).to.equal(1);\r",
+									"   pm.expect(prs0.prsId).to.equal(2);\r",
+									"   pm.expect(prs0.loginTime).to.be.greaterThan(0);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student B Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserB@domainA\", \"password\": \"passwordB\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Ssns/{{curLogin}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"{{curLogin}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check that you are logged out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 401);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns/{{curLogin}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns",
+								"{{curLogin}}"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8 Admin power stuff",
+			"item": [
+				{
+					"name": "Admin Login ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin common email prefix request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.equal(3);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=User",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "User"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin common email prefix 1 return",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.equal(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=UserB@domainA",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "UserB@domainA"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin common email prefix request no return",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.equal(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss?email=UserZZTop@domainA",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "UserZZTop@domainA"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin ID Profile Info request on other user ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Just User A (requesting user himself) is returned\", () => {",
+									"   var body = pm.response.json();",
+									"   var prs = body[0];",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(prs.id).to.equal(2);",
+									"   pm.expect(prs.email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(prs.firstName).to.equal(\"FirstA2\");",
+									"   pm.expect(prs.lastName).to.equal(\"LastA2\");",
+									"   pm.expect(prs.role).to.equal(0);",
+									"   pm.expect(prs.whenRegistered).to.be.greaterThan(0);",
+									"   pm.expect(prs.termsAccepted).to.be.equal(prs.whenRegistered);",
+									"   pm.expect(prs.password).to.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin register Student D w role 1, no password, terms not accepted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkAndSavePost(pm, \"StdDId\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserD@domainA\",\n    \"firstName\": \"FirstC\",\n    \"lastName\" : \"LastC\",\n    \"password\" : \"\",\n    \"role\"     : 1,\n    \"termsAccepted\": false\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin try changing termsAccepted or whenRegistered of other user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 400);\r",
+									"\r",
+									"pm.test(`3 forbiddenFields: email, termsAccepted, whenRegistered`, () => {\r",
+									"let reponseJson = pm.response.json();\r",
+									"pm.expect(reponseJson.length).to.eql(3);\r",
+									"pm.expect(reponseJson[0].tag).to.eql(\"forbiddenField\");\r",
+									"pm.expect(reponseJson[0].params).to.eql([\"email\"]);\r",
+									"pm.expect(reponseJson[1].tag).to.eql(\"forbiddenField\");\r",
+									"pm.expect(reponseJson[1].params).to.eql([\"termsAccepted\"]);\r",
+									"pm.expect(reponseJson[2].tag).to.eql(\"forbiddenField\");\r",
+									"pm.expect(reponseJson[2].params).to.eql([\"whenRegistered\"]);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"otherEmail@domainA\",\n    \"termsAccepted\": false,\n    \"whenRegistered\": 2\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdDAid}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdDAid}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin change password First, Last, Password, role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"FirstC2\",\n    \"lastName\" : \"LastC2\",\n    \"password\" : \"passwordC2\",\n    \"role\"     : 0\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdCId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdCId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin try changing password to empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"password\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\" : \"\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"4"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Student D",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdCId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdCId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Nonexistent Student D",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 404)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdCId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdCId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "9 Cnvs",
+			"item": [
+				{
+					"name": "Get convo while there are none by owner ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"Empty list is returned as there are no convos\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.equal(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs?owner=4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							],
+							"query": [
+								{
+									"key": "owner",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try getting all convos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All convos are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.equal(2);",
+									"   pm.expect(body[0].id).to.equal(2);",
+									"   pm.expect(body[0].lasMessage).is.undefined;",
+									"   pm.expect(body[0].ownerId).to.equal(2);",
+									"   pm.expect(body[0].title).to.equal(\"Convo 2\");",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get and examine convo 3 by convo ID 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All convos are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.id).to.equal(2);",
+									"   pm.expect(body.lasMessage).is.undefined;",
+									"   pm.expect(body.ownerId).to.equal(2);",
+									"   pm.expect(body.title).to.equal(\"Convo 2\");",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin try creating new convo w/o title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"missingField\", [\"title\"])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin try creating new convo w very long title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"title\"])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Convo 1 Duplicate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"dupTitle\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"Convo 3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin change other people's convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Convo 2+\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin try changing convo name to duplicate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"dupTitle\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"Convo 3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin delete convo 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"2"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student A New Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);",
+									"pm.collectionVariables.set(\"stdALogin\", ",
+									"   pm.collectionVariables.get(\"curLogin\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA2\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-admin StudA message to conversation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageA\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student B ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserB@domainA\", \"password\": \"passwordB\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-admin StudB message to conversation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageB\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try deleting convo of other user as non-admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/javascript"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AU-user change other people's convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 403);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\" : \"newTitle\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "TOO LONG message to conversation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badValue\", [\"content\"]);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Like messageA Id 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Like messageA Id 1 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"dupLike\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student A New Password Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);",
+									"pm.collectionVariables.set(\"stdALogin\", ",
+									"   pm.collectionVariables.get(\"curLogin\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA2\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-admin StudA message to conversation Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageA2\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-admin StudA message to conversation Copy 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageA3\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Try getting all convos Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All convos are returned, last message time is correct\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(body[0].id).to.equal(3);",
+									"   pm.expect(body[0].lastMessage).is.greaterThan(0);",
+									"   pm.expect(body[0].ownerId).to.equal(2);",
+									"   pm.expect(body[0].title).to.equal(\"Convo 3\");",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Convo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"title\" : \"new convo\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Student C",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkAndSavePost(pm, \"StdCId\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"UserC@domainA\",\n    \"firstName\": \"FirstC\",\n    \"lastName\" : \"LastC\",\n    \"password\" : \"passwordC\",\n    \"role\"     : 0,\n    \"termsAccepted\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Prss",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student C",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserC@domainA\", \"password\": \"passwordC\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Like messageA Id 1 Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Like messageA Id 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Msgs/4/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"4",
+								"Likes"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Non-admin StudC messageC",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"messageC\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all msg 1 likes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All convos are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.equal(1);",
+									"   pm.expect(body[0].id).to.equal(2);",
+									"   pm.expect(body[0].prsId).to.equal(6);",
+									"   pm.expect(body[0].firstName).to.equal(\"FirstC\");",
+									"   pm.expect(body[0].lastName).to.equal(\"LastC\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes?num=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							],
+							"query": [
+								{
+									"key": "num",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get 1 msg 1 like",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All convos are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.equal(2);",
+									"   pm.expect(body[0].id).to.equal(1);",
+									"   pm.expect(body[0].prsId).to.equal(3);",
+									"   pm.expect(body[0].firstName).to.equal(\"FirstB\");",
+									"   pm.expect(body[0].lastName).to.equal(\"LastB\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/Likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								"Likes"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on message 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All convos are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.numLikes).to.equal(2);",
+									"   pm.expect(body.cnvId).to.equal(3);",
+									"   pm.expect(body.whenMade).to.greaterThan(0);",
+									"   pm.expect(body.email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body.content).to.equal(\"messageA\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Msgs/1/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Msgs",
+								"1",
+								""
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.eql(5);",
+									"",
+									"   pm.expect(body[0].id).to.equal(1);",
+									"   pm.expect(body[0].numLikes).to.equal(2);",
+									"   pm.expect(body[0].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[0].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[0].content).to.equal(\"messageA\");",
+									"",
+									"   pm.expect(body[1].id).to.equal(2);",
+									"   pm.expect(body[1].numLikes).to.equal(0);",
+									"   pm.expect(body[1].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[1].email).to.equal(\"UserB@domainA\");",
+									"   pm.expect(body[1].content).to.equal(\"messageB\");",
+									"",
+									"   pm.expect(body[2].id).to.equal(3);",
+									"   pm.expect(body[2].numLikes).to.equal(0);",
+									"   pm.expect(body[2].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[2].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[2].content).to.equal(\"messageA2\");",
+									"",
+									"   pm.collectionVariables.set(\"timestamp\", body[2].whenMade);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.eql(2);",
+									"",
+									"   pm.expect(body[0].id).to.equal(1);",
+									"   pm.expect(body[0].numLikes).to.equal(2);",
+									"   pm.expect(body[0].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[0].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[0].content).to.equal(\"messageA\");",
+									"",
+									"   pm.expect(body[1].id).to.equal(2);",
+									"   pm.expect(body[1].numLikes).to.equal(0);",
+									"   pm.expect(body[1].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[1].email).to.equal(\"UserB@domainA\");",
+									"   pm.expect(body[1].content).to.equal(\"messageB\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs?num=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							],
+							"query": [
+								{
+									"key": "num",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs?dateTime={{timestamp}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							],
+							"query": [
+								{
+									"key": "dateTime",
+									"value": "{{timestamp}}"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs Copy 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs?dateTime={{timestamp}}&num=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							],
+							"query": [
+								{
+									"key": "dateTime",
+									"value": "{{timestamp}}"
+								},
+								{
+									"key": "num",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.eql(3);",
+									"",
+									"   pm.expect(body[0].id).to.equal(1);",
+									"   pm.expect(body[0].cnvId).to.equal(3);",
+									"   pm.expect(body[0].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[0].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[0].content).to.equal(\"messageA\");",
+									"   pm.expect(body[0].numLikes).to.equal(2);",
+									"",
+									"   pm.expect(body[1].id).to.equal(3);",
+									"   pm.expect(body[1].cnvId).to.equal(3);",
+									"   pm.expect(body[1].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[1].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[1].content).to.equal(\"messageA2\");",
+									"   pm.expect(body[1].numLikes).to.equal(0);",
+									"",
+									"      pm.expect(body[2].id).to.equal(4);",
+									"   pm.expect(body[2].cnvId).to.equal(3);",
+									"   pm.expect(body[2].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[2].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[2].content).to.equal(\"messageA3\");",
+									"   pm.expect(body[2].numLikes).to.equal(1);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.eql(3);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs?order=date",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "date"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.eql(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs?num=2&order=date",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							],
+							"query": [
+								{
+									"key": "num",
+									"value": "2"
+								},
+								{
+									"key": "order",
+									"value": "date"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"",
+									"   pm.expect(body.length).to.eql(3);",
+									"",
+									"   pm.expect(body[0].id).to.equal(1);",
+									"   pm.expect(body[0].cnvId).to.equal(3);",
+									"   pm.expect(body[0].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[0].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[0].content).to.equal(\"messageA\");",
+									"   pm.expect(body[0].numLikes).to.equal(2);",
+									"",
+									"   pm.expect(body[1].id).to.equal(4);",
+									"   pm.expect(body[1].cnvId).to.equal(3);",
+									"   pm.expect(body[1].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[1].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[1].content).to.equal(\"messageA3\");",
+									"   pm.expect(body[1].numLikes).to.equal(1);",
+									"",
+									"      pm.expect(body[2].id).to.equal(3);",
+									"   pm.expect(body[2].cnvId).to.equal(3);",
+									"   pm.expect(body[2].whenMade).to.greaterThan(0);",
+									"   pm.expect(body[2].email).to.equal(\"UserA@domainA\");",
+									"   pm.expect(body[2].content).to.equal(\"messageA2\");",
+									"   pm.expect(body[2].numLikes).to.equal(0);",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Prss/{{StdAId}}/Msgs?order=likes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdAId}}",
+								"Msgs"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "likes"
+								}
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login  Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkLogin(pm);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"adm@11.com\", \"password\": \"password\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy 5",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.collectionVariables.set(\"timestamp2\", body.lastMessage);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								""
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as an Admin Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);\r",
+									"\r",
+									"pm.test(\"Correct number of sessions and details is returned to Admin\", () => {\r",
+									"   var body = pm.response.json();\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Student C",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Prss/{{StdCId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Prss",
+								"{{StdCId}}"
+							]
+						},
+						"description": "\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get info on cnvs 3 / Msgs Copy 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.length).to.eql(4);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/Msgs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								"Msgs"
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get msgs info through prss/prsid/msgs Copy 4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);",
+									"",
+									"pm.test(\"All messages are returned, null as last message is checked\", () => {",
+									"   var body = pm.response.json();",
+									"   pm.expect(body.lastMessage).to.be.eql(pm.collectionVariables.get(\"timestamp2\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/Cnvs/3/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Cnvs",
+								"3",
+								""
+							]
+						},
+						"description": "Get Info Prs 4\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Ssns list as an Admin Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 200);\r",
+									"\r",
+									"pm.test(\"Correct number of sessions and details is returned to Admin\", () => {\r",
+									"   var body = pm.response.json();\r",
+									"   pm.expect(body.length).to.eq(8);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as Student C Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkSimpleError(pm, \"badLogin\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserC@domainA\", \"password\": \"passwordC\"}"
+						},
+						"url": {
+							"raw": "{{url}}/Ssns",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Ssns"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "???",
+			"item": [
+				{
+					"name": "Reach out to non-existent resource User-AU",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"checkStatus(pm, 404);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"UserA@domainA\", \"password\": \"passwordA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/someresource",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"someresource"
+							]
+						},
+						"description": "Good Login\n"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"getLocationId = (pm) => {",
+					"    let locURL = pm.response.headers.get(\"Location\");",
+					"",
+					"    locURL = locURL && locURL.split('/');",
+					"    return locURL && locURL[locURL.length - 1]",
+					"}",
+					"",
+					"checkLogin = (pm) => {",
+					"    let locURL;",
+					"",
+					"    pm.test(\"Location returned\", () => pm.response.to.have.header(\"Location\"));",
+					"    pm.test(\"Cookie returned\", () => pm.response.to.have.header('Set-Cookie'));",
+					"    pm.test(\"Cookie is CHSAuth\", () => pm.expect(pm.response.headers.get('Set-Cookie').startsWith(\"CHSAuth\")).is.true);",
+					"",
+					"    locURL = pm.response.headers.get(\"Location\");",
+					"    locURL = locURL && locURL.split('/');",
+					"",
+					"    pm.collectionVariables.set(\"curLogin\", getLocationId(pm));",
+					"}",
+					"",
+					"checkStatus = (pm, code) =>",
+					"   pm.test(`Status ${code}`, () => pm.response.to.have.status(code));",
+					"",
+					"// Expect exactly one error, of the tag and params indicated.",
+					"checkSimpleError = (pm, tag, params) => {",
+					"   pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+					"   pm.test(`The one error is ${tag} w/params ${params}`, () => {",
+					"       let reponseJson = pm.response.json();",
+					"       pm.expect(reponseJson.length).to.eql(1);",
+					"       pm.expect(reponseJson[0].tag).to.eql(tag);",
+					"       if(params) {",
+					"           pm.expect(reponseJson[0].params).to.eql(params);  ",
+					"       } else {",
+					"           pm.expect(reponseJson[0].params).to.eql(null);",
+					"       }       ",
+					"   });",
+					"}",
+					"",
+					"checkNumErrors = (pm, num) => {",
+					"   pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+					"   pm.test(`There are ${num} erors`, () => {",
+					"       let reponseJson = pm.response.json();",
+					"       pm.expect(reponseJson.length).to.eql(num);     ",
+					"   });",
+					"}",
+					"",
+					"checkAndSavePost = (pm, varName) => {   ",
+					"    checkStatus(pm, 200);",
+					"    pm.collectionVariables.set(`${varName}`, getLocationId(pm));",
+					"    checkVarNotUndefined(varName);",
+					"    //console.log(pm.collectionVariables.get(`${varName}`));",
+					"}",
+					"",
+					"checkVarNotUndefined = (varName) => {",
+					"    pm.test(`The ${varName} is not undefined`, () => {",
+					"        pm.expect(pm.collectionVariables.get(`${varName}`)).is.not.undefined;      ",
+					"    });",
+					" }",
+					"",
+					"checkIfBodyIsEmpty = (pm) => {",
+					"    pm.test(`The response body is empty`, () => {",
+					"        var res = (_.isEmpty(responseBody));",
+					"        pm.expect(res).to.be.true     ",
+					"    });",
+					" }",
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "curLogin",
+			"value": ""
+		},
+		{
+			"key": "stdALogin",
+			"value": ""
+		},
+		{
+			"key": "cnv2After",
+			"value": ""
+		},
+		{
+			"key": "likeablePost",
+			"value": ""
+		},
+		{
+			"key": "Cnv1ID",
+			"value": ""
+		},
+		{
+			"key": "Cnv2ID",
+			"value": ""
+		},
+		{
+			"key": "Cnv1Id",
+			"value": ""
+		},
+		{
+			"key": "Cnv2Id",
+			"value": ""
+		},
+		{
+			"key": "Cnv3Id",
+			"value": ""
+		},
+		{
+			"key": "StdAId",
+			"value": ""
+		},
+		{
+			"key": "PrsAId",
+			"value": ""
+		},
+		{
+			"key": "PrsBId",
+			"value": ""
+		},
+		{
+			"key": "StdCId",
+			"value": ""
+		},
+		{
+			"key": "LastCnv2PostId",
+			"value": ""
+		},
+		{
+			"key": "myNewVar",
+			"value": ""
+		},
+		{
+			"key": "StdBId",
+			"value": ""
+		},
+		{
+			"key": "StdDId",
+			"value": ""
+		},
+		{
+			"key": "Convo2Id",
+			"value": ""
+		},
+		{
+			"key": "Convo1Id",
+			"value": ""
+		},
+		{
+			"key": "msgA",
+			"value": ""
+		},
+		{
+			"key": "Like1",
+			"value": ""
+		},
+		{
+			"key": "StdLikeA",
+			"value": ""
+		},
+		{
+			"key": "timestamp",
+			"value": ""
+		},
+		{
+			"key": "timestamp2",
+			"value": ""
+		}
+	]
+}

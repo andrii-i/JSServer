@@ -114,7 +114,6 @@ app.delete("/DB", function(req, res) {
 // Anchor handler for general 404 cases.
 app.use(function(req, res) {
    res.status(404).end();
-   console.log("404 status given");
    req.cnn && req.cnn.release();
 });
 
