@@ -47,7 +47,6 @@ app.use(router);
 // Check general login.  If OK, add Validator to |req| and continue processing,
 // otherwise respond immediately with 401 and noLogin error tag.
 app.use(function(req, res, next) {
-   console.log(req.path);
    if (req.session || (req.method === "POST" &&
     (req.path === "/Prss" || req.path === "/Ssns"))) {
       req.validator = new Validator(req, res);
@@ -67,6 +66,11 @@ app.use("/Cnvs", require("./Conversation/Cnvs.js"));
 // Special debugging route for /DB DELETE.  Clears all table contents,
 //resets all auto_increment keys to start at 1, and reinserts one admin user.
 app.delete("/DB", function(req, res) {
+   if (!req.session.isAdmin()) {
+      req.cnn.release();
+      res.status(401).end();
+   }
+
    // Callbacks to clear tables
    var cbs = ["Message", "Conversation", "Person"].map(
       table => function(cb) {
@@ -85,8 +89,8 @@ app.delete("/DB", function(req, res) {
    // Callback to reinsert admin user
    cbs.push(cb => {
       req.cnn.query("INSERT INTO Person (firstName, lastName, email," +
-         " password, whenRegistered, role) VALUES " +
-         "(\"Joe\", \"Admin\", \"adm@11.com\",\"password\", NOW(), 1)", cb);
+       " password, whenRegistered, role) VALUES " +
+       "(\"Joe\", \"Admin\", \"adm@11.com\",\"password\", NOW(), 1)", cb);
    });
 
    // Callback to clear sessions, release connection and return result
