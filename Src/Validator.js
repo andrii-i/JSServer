@@ -69,10 +69,10 @@ Validator.prototype.checkAdmin = function(cb) {
 };
 
 // Validate that AU is the specified person or is an admin
-Validator.prototype.checkPrsOK = function(prsId, cb) {
+Validator.prototype.checkPrsOK = function(claimedId, cb) {
    return this.check(this.session &&
-    (this.session.isAdmin() || this.session.id === prsId),
-   Validator.Tags.noPermission, null, cb);
+    parseInt(this.session.prsId, 10) === parseInt(claimedId, 10),
+    Validator.Tags.noPermission, null, cb);
 };
 
 // Check presence of truthy property in |obj| for all fields in fieldList

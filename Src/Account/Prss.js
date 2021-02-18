@@ -38,11 +38,11 @@ router.post('/', function(req, res) {
    var cnn = req.cnn;
 
    if (admin && !body.password)
-      body.password = "*";                       // Blocking password
-   body.whenRegistered = new Date();
+      body.password = "*";                     
+   body.whenRegistered = new Date(); // why Date.now() doesn't work?
 
    async.waterfall([
-      function(cb) { // Check that pass, email, lastName, and role not empty
+      function(cb) { 
          if (vld.hasDefinedFields(body, ["password", "email", "lastName", 
           "role"], cb) && 
           vld.chain(!body.firstName || body.firstName.length <= 30, 
@@ -63,8 +63,12 @@ router.post('/', function(req, res) {
       //function(whatever was after the error parameter from prior callback, cb)
       function(existingPrss, fields, cb) {  // If no dups, insert new Person
          if (vld.check(!existingPrss.length, Tags.dupEmail, null, cb)) {
-            body.termsAccepted = body.termsAccepted && new Date();
-            body.whenRegistered = body.termsAccepted;
+            if (admin && !body.termsAccepted) {
+               body.termsAccepted = null;
+            } else {
+               body.termsAccepted = body.termsAccepted && new Date();
+               body.whenRegistered = body.termsAccepted;
+            }
             cnn.chkQry('insert into Person set ?', [body], cb);
          }
       },
@@ -122,9 +126,11 @@ router.get('/:id', function(req, res) {
 
    async.waterfall([
    function(cb) {
-     if (vld.checkPrsOK(req.params.id, cb))
-        req.cnn.chkQry('select * from Person where id = ?', [req.params.id],
-         cb);
+      if (vld.checkPrsOK(req.params.id, cb)) {
+         req.cnn.chkQry('select id, firstName, lastName, email, whenRegistered,\
+          termsAccepted, role from Person where id = ?', [req.params.id], 
+          cb);
+      }
    },
    function(prsArr, fields, cb) {
       if (vld.check(prsArr.length, Tags.notFound, null, cb)) {
@@ -136,24 +142,6 @@ router.get('/:id', function(req, res) {
       req.cnn.release();
    });
 });
-
-/*
-router.get('/:id', function(req, res) {
-   var vld = req.validator;
-
-   if (vld.checkPrsOK(req.params.id)) {
-      req.cnn.query('select * from Person where id = ?', [req.params.id],
-      function(err, prsArr) {
-         if (vld.check(prsArr.length, Tags.notFound))
-            res.json(prsArr);
-         req.cnn.release();
-      });
-   }
-   else {
-      req.cnn.release();
-   }
-});
-*/
 
 router.delete('/:id', function(req, res) {
    var vld = req.validator;
