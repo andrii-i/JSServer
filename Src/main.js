@@ -105,54 +105,13 @@ app.delete("/DB", function(req, res) {
       else
          res.status(200).end();
    });
-
-   /* Equivalent expanded code for instructional reference
-      async.series([
-         function(callback){
-            cnn.query('delete from Person`', callback);
-         },
-         function(callback){
-            cnn.query('delete from Conversation', callback);
-         },
-         function(callback){
-            cnn.query('delete from Message', callback);
-         },
-         function(callback){
-            cnn.query('alter table Person auto_increment = 1', callback);
-         },
-         function(callback){
-            cnn.query('alter table Conversation auto_increment = 1', callback);
-         },
-         function(callback){
-            cnn.query('alter table Message auto_increment = 1', callback);
-         },
-         function(callback){
-            cnn.query('INSERT INTO Person (firstName, lastName, email,' +
-                ' password, whenRegistered, role) VALUES ' +
-                '("Joe", "Admin", "adm@11.com","password", NOW(), 2);',
-             callback);
-         },
-         function(callback){
-            for (var session in Session.sessions)
-               delete Session.sessions[session];
-            res.send();
-            callback();
-         }
-      ],
-      err => {
-        req.cnn.release();
-        if (err)
-           res.status(400).json(err);
-        else
-           res.status(200).end();
-      }
-   );*/
 });
 
 // Anchor handler for general 404 cases.
 app.use(function(req, res) {
    res.status(404).end();
-   res.cnn.release();
+   console.log("404 status given");
+   req.cnn && req.cnn.release();
 });
 
 // Handler of last resort.  Send a 500 response with stacktrace as the body.
