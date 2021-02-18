@@ -66,17 +66,17 @@ app.use("/Cnvs", require("./Conversation/Cnvs.js"));
 // Special debugging route for /DB DELETE.  Clears all table contents,
 //resets all auto_increment keys to start at 1, and reinserts one admin user.
 app.delete("/DB", function(req, res) {
-   if (!req.session.isAdmin()) {
-      req.cnn.release();
-      res.status(401).end();
-   }
-
    // Callbacks to clear tables
    var cbs = ["Message", "Conversation", "Person"].map(
       table => function(cb) {
          req.cnn.query("delete from " + table, cb);
       }
-   );
+   );   
+
+   if (!req.session.isAdmin()) {
+      req.cnn.release();
+      res.status(401).end();
+   }
 
    // Callbacks to reset increment bases
    cbs = cbs.concat(
