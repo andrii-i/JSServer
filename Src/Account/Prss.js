@@ -53,8 +53,8 @@ router.post('/', function(req, res) {
           .chain(body.role === 0 || body.role === 1, Tags.badValue,
           ["role"])
           .chain(body.termsAccepted || admin, Tags.noTerms, null)
-          .chain((body.role === 1 && admin) || body.role === 0 || 
-          (body.role !== 0 && body.role !== 1), Tags.forbiddenRole, null)
+          .chain(body.role === 1 && admin || body.role === 0 || 
+          body.role !== 0 && body.role !== 1, Tags.forbiddenRole, null)
           .check(body.email.length <= 150, Tags.badValue, ["email"], 
           cb)) {
             cnn.chkQry('select * from Person where email = ?', body.email, cb);
@@ -90,18 +90,29 @@ router.put('/:id', function(req, res) {
 
    async.waterfall([
    cb => {
+      var admin = req.session && req.session.isAdmin();
+      
       if (vld.checkPrsOK(req.params.id, cb) && 
-       vld.chain(!(role in body) || ssn.isAdmin(), Tags.badValue, ["role"])
-       // .hasOnlyFields(body, okFields)
-       // .checkFieldsLength(body, ...)
-       .chain(!(password in body) || req.body.oldPassword || ssn.isAdmin, 
-       Tags.noOldPwd) 
-       .check(!(password in body) || req.body.password, Tags.badValue, 
-       ["password"], cb)) {
-         cnn.chkQry("select * from Person where id = ?", [red.param.id], cb);
+       vld.chain(!("email" in body), Tags.forbiddenField, ["email"])
+       .chain(!("whenRegistered" in body), Tags.forbiddenField, 
+       ["whenRegistered"])
+       .chain(!("termsAccepted" in body), Tags.forbiddenField, 
+       ["termsAccepted"])
+       .chain(!("lastName") in body || vld.hasValue(body.lastName), 
+       Tags.badValue, ["lastName"])
+       .chain(!("role" in body) || body.role === 0 || body.role === 1 && 
+       admin, Tags.badValue, ["role"])
+       .chain(!("firstName") in body || body.firstName.length <= 30, 
+       Tags.badValue, ["firstName"])
+       .chain(!("password" in body) || vld.hasValue(body.password), 
+       Tags.badValue, ["password"])
+       .check(!("password" in body) || "oldPassword" in body || 
+       !(vld.hasValue(body.password)) || admin, Tags.noOldPwd, null, cb)) {
+         cnn.chkQry("select * from Person where id = ?", [req.params.id], cb);
       }
    },
    (foundPrs, fields, cb) => {
+      console.log(foundPrs);
       if (vld.check(foundPrs.length, Tags.notFound, null, cb) &&
        vld.check(ssn.isAdmin() || !password in body)
        || req.body.oldPassword === foundPrs[0].password,

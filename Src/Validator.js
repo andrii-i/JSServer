@@ -92,13 +92,13 @@ Validator.prototype.hasDefinedFields = function(obj, fieldNames, cb) {
    var i = 0;
    for (i = 0; i < fieldNames.length; i++) {
       self.chain(obj.hasOwnProperty(fieldNames[i]) && 
-       Validator.hasValue(obj[fieldNames[i]]), Validator.Tags.missingField, 
+       this.hasValue(obj[fieldNames[i]]), Validator.Tags.missingField, 
        [fieldNames[i]]);
    }
    return this.check(true, null, null, cb);
 };
 
-Validator.hasValue = function(field) {
+Validator.prototype.hasValue = function(field) {
    return (field !== null && field !== "" && field !== undefined);
 };
 
