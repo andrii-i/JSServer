@@ -98,12 +98,12 @@ router.put('/:id', function(req, res) {
        ["whenRegistered"])
        .chain(!("termsAccepted" in body), Tags.forbiddenField, 
        ["termsAccepted"])
-       .chain(!("lastName") in body || vld.hasValue(body.lastName), 
+       .chain(!("lastName" in body) || vld.hasValue(body.lastName), 
        Tags.badValue, ["lastName"])
        .chain(!("role" in body) || body.role === 0 || body.role === 1 && 
        admin, Tags.badValue, ["role"])
-       .chain(!("firstName") in body || body.firstName.length <= 30, 
-       Tags.badValue, ["firstName"])
+       .chain(!("firstName" in body) || "firsName" in body && 
+       body.firstName.length <= 30, Tags.badValue, ["firstName"])
        .chain(!("password" in body) || vld.hasValue(body.password), 
        Tags.badValue, ["password"])
        .check(!("password" in body) || "oldPassword" in body || 
