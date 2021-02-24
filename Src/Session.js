@@ -34,19 +34,6 @@ var Session = function(user, res) {
    this.loginTime = this.lastUsed = new Date().getTime();
 };
 
-Session.prototype.isAdmin = function() {
-   return this.role === 1;
-};
-
-// Log out a user by removing this Session
-Session.prototype.logOut = function() {
-   delete ssnsById[this.id];
-   delete ssnsByCookie[this.authToken];
-};
-
-Session.getAllIds = () => Object.keys(ssnsById);
-Session.findById = id => ssnsById[id];
-
 // Function router that will find any Session associated with |req|, based on
 // cookies, delete the Session if it has timed out, or attach the Session to
 // |req| if it's current If |req| has an attached Session after this process,
@@ -65,5 +52,18 @@ var router = function(req, res, next) {
    }
    next();
 };
+
+Session.prototype.isAdmin = function() {
+   return this.role === 1;
+};
+
+// Log out a user by removing this Session
+Session.prototype.logOut = function() {
+   delete ssnsById[this.id];
+   delete ssnsByCookie[this.authToken];
+};
+
+Session.getAllIds = () => Object.keys(ssnsById);
+Session.findById = id => ssnsById[id];
 
 module.exports = {Session, router};

@@ -7,8 +7,9 @@ router.baseURL = '/Ssns';
 
 router.get('/', function(req, res) {
    var body = [], ssn;
+   var vld = req.validator;
 
-   if (req.validator.checkAdmin()) {
+   if (vld.check(vld.checkAdmin(), Tags.noPermission)) {
       Session.getAllIds().forEach(id => {
          ssn = Session.findById(id);
          body.push({id: ssn.id, prsId: ssn.prsId, loginTime: ssn.loginTime});
@@ -20,10 +21,11 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
    var ssn;
    var cnn = req.cnn;
+   var vld = req.validator;
 
    cnn.chkQry('select * from Person where email = ?', [req.body.email],
       function(err, result) {
-         if (req.validator.check(result.length && result[0].password ===
+         if (vld.check(result.length && result[0].password ===
        req.body.password, Tags.badLogin)) {
             ssn = new Session(result[0], res);
             res.location(router.baseURL + '/' + ssn.id).end();

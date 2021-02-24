@@ -66,17 +66,13 @@ app.use("/Cnvs", require("./Conversation/Cnvs.js"));
 // Special debugging route for /DB DELETE.  Clears all table contents,
 //resets all auto_increment keys to start at 1, and reinserts one admin user.
 app.delete("/DB", function(req, res) {
+   var admin = req.session.isAdmin();
    // Callbacks to clear tables
    var cbs = ["Message", "Conversation", "Person"].map(
       table => function(cb) {
          req.cnn.query("delete from " + table, cb);
       }
    );   
-
-   if (!req.session.isAdmin()) {
-      req.cnn.release();
-      res.status(401).end();
-   }
 
    // Callbacks to reset increment bases
    cbs = cbs.concat(
@@ -102,13 +98,19 @@ app.delete("/DB", function(req, res) {
       cb();
    });
 
-   async.series(cbs, err => {
-      req.cnn.release();
-      if (err)
-         res.status(400).json(err);
-      else
-         res.status(200).end();
-   });
+   if (admin) {
+      async.series(cbs, err => {
+         if (err)
+            res.status(400).json(err);
+         else
+            res.status(200).end();
+      });
+   } else if (req.session && !admin) {
+      res.status(403).end();
+   } else {
+      res.status(401).end();
+   }
+   req.cnn.release();
 });
 
 // Anchor handler for general 404 cases.
