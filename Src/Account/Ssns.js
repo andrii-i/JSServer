@@ -16,6 +16,7 @@ router.get('/', function(req, res) {
       });
       res.json(body);
    }
+   req.cnn.release();
 });
 
 router.post('/', function(req, res) {
@@ -26,7 +27,7 @@ router.post('/', function(req, res) {
    cnn.chkQry('select * from Person where email = ?', [req.body.email],
       function(err, result) {
          if (vld.check(result.length && result[0].password ===
-       req.body.password, Tags.badLogin)) {
+          req.body.password, Tags.badLogin)) {
             ssn = new Session(result[0], res);
             res.location(router.baseURL + '/' + ssn.id).end();
          }
@@ -34,17 +35,29 @@ router.post('/', function(req, res) {
       });
 });
 
-router.delete('/id', function(req, res) {
+router.get('/:id', function(req, res) {
+   console.log("starting get id");
+   var vld = req.validator;
+   var ssn = Session.findById(req.params.id);
+   console.log(ssn);
+
+   if (vld.check(vld.hasValue(ssn), Tags.resourceNotFound) 
+    && vld.checkPrsOK(ssn.prsId)) {
+      res.json({id: ssn.id, prsId: ssn.prsId, loginTime: ssn.loginTime});
+   }
    req.cnn.release();
 });
 
-router.get('/:id', function(req, res) {
+router.delete('/:id', function(req, res) {
    var vld = req.validator;
-   var ssn = Session.findById(req.query.id);
+   var ssn = Session.findById(req.params.id);
 
-   if (vld.check(ssn, Tags.notFound) && vld.checkPrsOK(ssn.id)) {
-      res.json({id: ssn.id, prsId: ssn.prsId, loginTime: ssn.loginTime});
-   }
+   if (vld.check(vld.hasValue(ssn), Tags.resourceNotFound) &&
+    vld.checkPrsOK(ssn.prsId)) {
+      console.log("logging out the session");
+      ssn.logOut();
+      res.status(200).end();
+   }   
    req.cnn.release();
 });
 

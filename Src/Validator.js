@@ -21,7 +21,8 @@ Validator.Tags = {
    oldPwdMismatch: "oldPwdMismatch",
    dupTitle: "dupTitle",            // Title duplicates an existing cnv title
    queryFailed: "queryFailed",
-   forbiddenField: "forbiddenField"
+   forbiddenField: "forbiddenField",
+   resourceNotFound : "resourceNotFound"
 };
 
 // Check |test|.  If false, add an error with tag and possibly empty array
@@ -44,6 +45,9 @@ Validator.prototype.check = function(test, tag, params, cb) {
       if (this.res) { // If response object is present and was not e.g. null-ed
          if (this.errors[0].tag === Validator.Tags.noPermission)
             this.res.status(403).end(); // Close response with 403 code
+         else if (this.errors[0].tag === Validator.Tags.resourceNotFound) {
+            this.res.status(404).end();
+         }
          else
             this.res.status(400).json(this.errors); // Close w 400 and errors
          this.res = null;   // Preclude repeated closings
@@ -71,7 +75,8 @@ Validator.prototype.checkAdmin = function(cb) {
 // Validate that AU is the specified person or is an admin
 Validator.prototype.checkPrsOK = function(claimedId, cb) {
    return this.check(this.session &&
-    parseInt(this.session.prsId, 10) === parseInt(claimedId, 10),
+    parseInt(this.session.prsId, 10) === parseInt(claimedId, 10) ||
+    this.checkAdmin(),
     Validator.Tags.noPermission, null, cb);
 };
 
