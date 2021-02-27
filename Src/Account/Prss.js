@@ -23,8 +23,8 @@ router.get('/', function(req, res) {
       req.cnn.chkQry('SELECT id, email FROM Person WHERE email LIKE ?', 
        [email.concat('%')], handler);
    } else if (!admin && !email) {
-      res.json([]);
-      req.cnn.release();
+      req.cnn.chkQry('SELECT id, email FROM Person WHERE email = ?', 
+       [ssnEmail], handler);
    } else if (!admin && email) {
       req.cnn.chkQry('SELECT id, email FROM Person WHERE email LIKE ? \
        AND email = ?', [email.concat('%'), ssnEmail], handler);
@@ -112,15 +112,15 @@ router.put('/:id', function(req, res) {
    },
    (foundPrs, fields, cb) => {
       if (vld.check(foundPrs.length, Tags.notFound, null, cb) &&
-       vld.check(admin || !("password" in body) || req.body.oldPassword === foundPrs[0].password,
-       Tags.oldPwdMismatch, null, cb)) {
+       vld.check(admin || !("password" in body) || req.body.oldPassword === 
+        foundPrs[0].password, Tags.oldPwdMismatch, null, cb)) {
          delete body.oldPassword;
          cnn.chkQry("update Person set ? where id = ?",
          [body, req.params.id], cb);
       } 
    },
    (updRes, fields, cb) => {
-      res.end();
+      res.status(200).end();
       cb();
    }, 
    ],

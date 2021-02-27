@@ -4,14 +4,36 @@ var router = Express.Router({caseSensitive: true});
 var async = require('async');
 
 router.baseURL = '/Cnvs';
+router.msgURL = '/Msgs';
 
 router.get('/', function(req, res) {
-   req.cnn.chkQry('select id, title from Conversation', null,
-   function(err, cnvs) {
-      if (!err)
-         res.json(cnvs);
+   var vld = req.validator; 
+   var ownerId = req.query.owner;
+
+   var handler = function(err, cnvArr, fields) {
+      res.json(cnvArr);
       req.cnn.release();
-   });
+   };
+
+   if (vld.hasValue(ownerId)) {
+      req.cnn.chkQry('select id, title, lastMessage, ownerId from Conversation \
+       WHERE ownerId = ?', [ownerId], handler);
+   } else {
+      req.cnn.chkQry('select id, title, lastMessage, ownerId from Conversation',
+       null, handler);
+   }
+});
+
+router.get('/:id', function(req, res) {
+   var cnvsId = req.params.id;
+
+   var handler = function(err, cnvArr, fields) {
+      res.json(cnvArr[0]);
+      req.cnn.release();
+   };
+
+   req.cnn.chkQry('select id, title, lastMessage, ownerId from Conversation \
+    WHERE id = ?', [cnvsId], handler);
 });
 
 router.post('/', function(req, res) {
@@ -20,17 +42,26 @@ router.post('/', function(req, res) {
    var cnn = req.cnn;
 
    async.waterfall([
-   function(cb) {
-      cnn.chkQry('select * from Conversation where title = ?', body.title, cb);
+   cb => {
+      if (vld.check(vld.hasValue(body.title), Tags.missingField, ["title"], cb) 
+       && vld.check(body.title.length <= 80, Tags.badValue, ["title"], cb)) {
+         cnn.chkQry('select * from Conversation where title = ?', [body.title], 
+          cb);
+      }
    },
-   function(existingCnv, fields, cb) {
-      if (vld.check(!existingCnv.length, Tags.dupTitle, null, cb))
-         cnn.chkQry("insert into Conversation set ?", body, cb);
+   (existingCnv, fields, cb) => {
+      if (vld.check(!existingCnv.length, Tags.dupTitle, null, cb)) {
+         body.lastMessage = null;
+         body.ownerId = req.session.prsId;
+         cnn.chkQry("insert into Conversation set ?", [body], cb);
+      }
    },
-   function(insRes, fields, cb) {
+   (insRes, fields, cb) => {
       res.location(router.baseURL + '/' + insRes.insertId).end();
-   }],
-   function() {
+      cb();
+   }
+   ],
+   err => {
       cnn.release();
    });
 });
@@ -43,18 +74,27 @@ router.put('/:cnvId', function(req, res) {
 
    async.waterfall([
    function(cb) {
-      cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
+      if (vld.check(vld.hasValue(body.title), Tags.missingField, ["title"], cb)
+       && vld.check(body.title.length <= 80, Tags.badValue, ["title"], cb)) {
+         cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
+      }
    },
    function(cnvs, fields, cb) {
       if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
-       vld.checkPrsOK(result[0].prsId, cb))
-         cnn.chkQry('select * from Conversation where id <> ? && title = ?',
+       vld.checkPrsOK(cnvs[0].ownerId, cb)) {
+         cnn.chkQry('select * from Conversation where id <> ? AND title = ?',
           [cnvId, body.title], cb);
+       }
    },
    function(sameTtl, fields, cb) {
-      if (vld.check(!sameTtl.length, Tags.dupTitle, cb))
-         cnn.chkQry("update Conversation set title = ? where id = ?",
+      if (vld.check(!sameTtl.length, Tags.dupTitle, null, cb)) {       
+         cnn.chkQry("update Conversation set title = ? WHERE id = ?", 
           [body.title, cnvId], cb);
+      }    
+   },
+   (result, fields, cb) => {
+      res.status(200).end();
+      cb();
    }],
    function(err) {
       cnn.release();
@@ -72,12 +112,53 @@ router.delete('/:cnvId', function(req, res) {
    },
    function(cnvs, fields, cb) {
       if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
-       vld.checkPrsOK(result[0].prsID, cb))
+       vld.checkPrsOK(cnvs[0].ownerId, cb)) {
          cnn.chkQry('delete from Conversation where id = ?', [cnvId], cb);
+      }
+   },
+   (result, fields, cb) => {
+      res.status(200).end();
+      cb();
    }],
-   function(err) {
-      if (!err)
-         cnn.status(200);
+   err => {
+      cnn.release();
+   });
+});
+
+router.post('/:id/Msgs', function(req, res) {
+   var cnvId = req.params.id;
+   var vld = req.validator;
+   var body = req.body;
+   var cnn = req.cnn;
+
+   async.waterfall([
+   cb => {
+      if (vld.check(vld.hasValue(body.content), Tags.missingField, ["content"], 
+       cb) && vld.check(body.content.length <= 5000, Tags.badValue, ["content"],
+       cb)) {
+         cnn.chkQry('select * from Conversation where id = ?', [cnvId], 
+          cb);
+      }
+   },
+   (existingCnv, fields, cb) => {
+      if (vld.check(existingCnv.length, Tags.resourceNotFound, null, cb)) {
+         body.whenMade = Date.now();
+         cnn.chkQry("update Conversation set lastMessage = ? WHERE id = ?",
+          [body.whenMade, cnvId], cb);
+      }
+   },
+   (result, fields, cb) => {
+      body.cnvId = cnvId;
+      body.prsId = req.session.prsId;
+      body.email = req.session.email;
+      body.numLikes = 0;
+      cnn.chkQry("insert into Message set ?", [body], cb);
+   },
+   (result, fields, cb) => {
+      res.location(router.msgURL + '/' + result.insertId).end();
+      cb();
+   }],
+   err => {
       cnn.release();
    });
 });

@@ -36,10 +36,8 @@ router.post('/', function(req, res) {
 });
 
 router.get('/:id', function(req, res) {
-   console.log("starting get id");
    var vld = req.validator;
    var ssn = Session.findById(req.params.id);
-   console.log(ssn);
 
    if (vld.check(vld.hasValue(ssn), Tags.resourceNotFound) 
     && vld.checkPrsOK(ssn.prsId)) {

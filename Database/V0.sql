@@ -18,7 +18,7 @@ create table Conversation (
    id int auto_increment primary key,
    ownerId int,
    title varchar(80) not null,
-   lastMessage datetime,
+   lastMessage BIGINT,
    constraint FKMessage_ownerId foreign key (ownerId) references Person(id)
     on delete cascade,
    unique key UK_title(title)
@@ -28,8 +28,10 @@ create table Message (
    id int auto_increment primary key,
    cnvId int not null,
    prsId int not null,
-   whenMade datetime not null,
+   whenMade BIGINT not null,
+   email varchar(150) not null,
    content varchar(5000) not null,
+   numLikes int not null,
    constraint FKMessage_cnvId foreign key (cnvId) references Conversation(id)
     on delete cascade,
    constraint FKMessage_prsId foreign key (prsId) references Person(id)
