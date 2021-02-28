@@ -84,7 +84,6 @@ router.post('/', function(req, res) {
 
 router.put('/:id', function(req, res) {
    var vld = req.validator;
-   var ssn = req.session;
    var body = req.body;
    var cnn = req.cnn;
    var admin = req.session && req.session.isAdmin();
@@ -111,7 +110,7 @@ router.put('/:id', function(req, res) {
       }
    },
    (foundPrs, fields, cb) => {
-      if (vld.check(foundPrs.length, Tags.notFound, null, cb) &&
+      if (vld.check(foundPrs.length, Tags.resourceNotFound, null, cb) &&
        vld.check(admin || !("password" in body) || req.body.oldPassword === 
         foundPrs[0].password, Tags.oldPwdMismatch, null, cb)) {
          delete body.oldPassword;
@@ -141,7 +140,7 @@ router.get('/:id', function(req, res) {
       }
    },
    function(prsArr, fields, cb) {
-      if (vld.check(prsArr.length, Tags.notFound, null, cb)) {
+      if (vld.check(prsArr.length, Tags.resourceNotFound, null, cb)) {
          res.json(prsArr);
          cb();
       }
@@ -161,7 +160,7 @@ router.delete('/:id', function(req, res) {
       }
    },
    function(result, fields, cb) {
-      if (vld.check(result.affectedRows, Tags.notFound, null, cb)) {
+      if (vld.check(result.affectedRows, Tags.resourceNotFound, null, cb)) {
          res.end();
          cb();
       }

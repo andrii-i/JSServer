@@ -23,7 +23,8 @@ Validator.Tags = {
    queryFailed: "queryFailed",
    forbiddenField: "forbiddenField",
    resourceNotFound : "resourceNotFound",
-   dupLike : "dupLike"
+   dupLike : "dupLike",
+   emptyArray : "emptyArray"
 };
 
 // Check |test|.  If false, add an error with tag and possibly empty array
@@ -48,9 +49,9 @@ Validator.prototype.check = function(test, tag, params, cb) {
             this.res.status(403).end(); // Close response with 403 code
          else if (this.errors[0].tag === Validator.Tags.resourceNotFound) {
             this.res.status(404).end();
-         }
-         else
-            this.res.status(400).json(this.errors); // Close w 400 and errors
+         } else if (this.errors[0].tag === Validator.Tags.emptyArray) {
+            this.res.json([]);
+         } else this.res.status(400).json(this.errors); // Close w 400 and err
          this.res = null;   // Preclude repeated closings
       }
       if (cb) 

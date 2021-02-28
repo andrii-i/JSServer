@@ -84,7 +84,7 @@ router.put('/:cnvId', function(req, res) {
       }
    },
    function(cnvs, fields, cb) {
-      if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
+      if (vld.check(cnvs.length, Tags.resourceNotFound, null, cb) &&
        vld.checkPrsOK(cnvs[0].ownerId, cb)) {
          cnn.chkQry('select * from Conversation where id <> ? AND title = ?',
           [cnvId, body.title], cb);
@@ -115,7 +115,7 @@ router.delete('/:cnvId', function(req, res) {
       cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
    },
    function(cnvs, fields, cb) {
-      if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
+      if (vld.check(cnvs.length, Tags.resourceNotFound, null, cb) &&
        vld.checkPrsOK(cnvs[0].ownerId, cb)) {
          cnn.chkQry('delete from Message where cnvId = ?', [cnvId], cb);
       }

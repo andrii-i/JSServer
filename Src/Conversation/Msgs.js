@@ -88,12 +88,17 @@ router.get('/:id/Likes', function(req, res) {
       }
    },
    (likes, fields, cb) => {
-      var prsIds = likes.map(like => like.prsId);
-      var query = "select id, firstName, lastName from Person where id IN (" + 
-       '?,'.repeat(prsIds.length).slice(0, -1) + ")";
-      
-      likeInfo = likes.map(x => x);
-      cnn.chkQry(query, prsIds, cb);
+      var prsIds;
+      var query;
+
+      if (vld.check(likes.length, Tags.emptyArray, null, cb)) {
+         prsIds = likes.map(like => like.prsId);
+         query = "select id, firstName, lastName from Person where id IN ("
+          + '?,'.repeat(prsIds.length).slice(0, -1) + ")";
+
+         likeInfo = likes.map(x => x);
+         cnn.chkQry(query, prsIds, cb);
+      }
    },
    (persons, fields, cb) => {
       var prsInfo = {}; 
@@ -104,16 +109,13 @@ router.get('/:id/Likes', function(req, res) {
       });
 
       likeInfo = likeInfo.map(like => {
-         return {
-          "id" : like.id, "prsId" : like.prsId, 
-          "lastName" : prsInfo[like.prsId].lastName,  
-          "firstName" : prsInfo[like.prsId].firstName
-         }
+         return {"id" : like.id, "prsId" : like.prsId, 
+          "lastName" : prsInfo[like.prsId].lastName, 
+          "firstName" : prsInfo[like.prsId].firstName};
       });
 
       likeInfo.sort(lastFirstNameSort); 
       if (vld.hasValue(num)) {
-
          likeInfo.sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
          likeInfo = likeInfo.slice(0, parseInt(num, 10));
       }
