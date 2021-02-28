@@ -52,7 +52,7 @@ router.delete('/:id', function(req, res) {
 
    if (vld.check(vld.hasValue(ssn), Tags.resourceNotFound) &&
     vld.checkPrsOK(ssn.prsId)) {
-      console.log("logging out the session");
+      console.log("Logging out the session");
       ssn.logOut();
       res.status(200).end();
    }   

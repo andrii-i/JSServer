@@ -28,7 +28,11 @@ router.get('/:id', function(req, res) {
    var cnvsId = req.params.id;
 
    var handler = function(err, cnvArr, fields) {
-      res.json(cnvArr[0]);
+      if (cnvArr.length) {
+         res.json(cnvArr[0]);
+      } else {
+         res.status(404).end();
+      }
       req.cnn.release();
    };
 
@@ -113,8 +117,11 @@ router.delete('/:cnvId', function(req, res) {
    function(cnvs, fields, cb) {
       if (vld.check(cnvs.length, Tags.notFound, null, cb) &&
        vld.checkPrsOK(cnvs[0].ownerId, cb)) {
-         cnn.chkQry('delete from Conversation where id = ?', [cnvId], cb);
+         cnn.chkQry('delete from Message where cnvId = ?', [cnvId], cb);
       }
+   },
+   function(result, fields, cb) {
+      cnn.chkQry('delete from Conversation where id = ?', [cnvId], cb);
    },
    (result, fields, cb) => {
       res.status(200).end();
@@ -156,6 +163,59 @@ router.post('/:id/Msgs', function(req, res) {
    },
    (result, fields, cb) => {
       res.location(router.msgURL + '/' + result.insertId).end();
+      cb();
+   }],
+   err => {
+      cnn.release();
+   });
+});
+
+router.get('/:id/Msgs', function(req, res) {
+   var cnvId = req.params.id;
+   var vld = req.validator;
+   var body = req.body;
+   var cnn = req.cnn;
+   var dateTime = req.query.dateTime;
+   var num = req.query.num;
+
+   async.waterfall([
+   cb => {
+      cnn.chkQry('select * from Conversation where id = ?', [cnvId], cb);
+   },
+   (conversation, fields, cb) => {
+      if (vld.check(conversation.length, Tags.resourceNotFound, null, cb)) {
+         cnn.chkQry('select id, prsId, whenMade, email, content, numLikes from\
+          Message where cnvId = ?', [cnvId], cb); 
+      }
+   },
+   (messages, fields, cb) => {
+      if (messages.length) {
+         messages.sort((a, b) => {
+            if (parseInt(a.whenMade, 10) > parseInt(b.whenMade, 10)) {
+               return 1;
+            } else if (parseInt(a.whenMade, 10) < parseInt(b.whenMade, 10)) {
+               return -1;
+            } else {
+               if (parseInt(a.id, 10) > parseInt(b.id, 10)) {
+                  return 1;
+               } else {
+                  return -1;
+               }
+            }
+         });
+
+         if (vld.hasValue(dateTime)) {
+            messages = messages.filter(
+               msg => (parseInt(msg.whenMade, 10) >= parseInt(dateTime, 10))
+            );
+         }
+
+         if (vld.hasValue(num)) {
+            messages = messages.slice(0, parseInt(num, 10));
+         }
+      }
+
+      res.json(messages);
       cb();
    }],
    err => {

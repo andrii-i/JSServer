@@ -21,6 +21,10 @@ app.use(function(req, res, next) { // mounts middleware function w/o path
    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
    res.header("Access-Control-Allow-Credentials", true);
    res.header("Access-Control-Allow-Headers", "Content-Type");
+   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+   res.header("Access-Control-Expose-Headers", "Content-Type, Location");
+   //res.removeHeader("Keep-Alive"); ???
+   res.header("Keep-Alive", "0");
    next();
 });
 
@@ -62,6 +66,7 @@ app.use(CnnPool.router);
 app.use("/Prss", require("./Account/Prss.js"));
 app.use("/Ssns", require("./Account/Ssns.js"));
 app.use("/Cnvs", require("./Conversation/Cnvs.js"));
+app.use("/Msgs", require("./Conversation/Msgs.js"));
 
 // Special debugging route for /DB DELETE.  Clears all table contents,
 //resets all auto_increment keys to start at 1, and reinserts one admin user.

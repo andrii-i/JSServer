@@ -38,5 +38,15 @@ create table Message (
     on delete cascade
 );
 
+create table Likes (
+   id int auto_increment primary key,
+   msgId int not null,
+   prsId int not null,
+   constraint FKMessage_msgId foreign key (msgId) references Message(id)
+    on delete cascade,
+   constraint FKMessage_likePrsId foreign key (prsId) references Person(id)
+    on delete cascade
+);
+
 insert into Person (firstName, lastName, email, password, whenRegistered, role)
  VALUES ("Joe", "Admin", "adm@11.com", "password", NOW(), 1);
