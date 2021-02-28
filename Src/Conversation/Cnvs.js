@@ -173,7 +173,6 @@ router.post('/:id/Msgs', function(req, res) {
 router.get('/:id/Msgs', function(req, res) {
    var cnvId = req.params.id;
    var vld = req.validator;
-   var body = req.body;
    var cnn = req.cnn;
    var dateTime = req.query.dateTime;
    var num = req.query.num;

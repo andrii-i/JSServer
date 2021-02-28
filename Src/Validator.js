@@ -22,7 +22,8 @@ Validator.Tags = {
    dupTitle: "dupTitle",            // Title duplicates an existing cnv title
    queryFailed: "queryFailed",
    forbiddenField: "forbiddenField",
-   resourceNotFound : "resourceNotFound"
+   resourceNotFound : "resourceNotFound",
+   dupLike : "dupLike"
 };
 
 // Check |test|.  If false, add an error with tag and possibly empty array
