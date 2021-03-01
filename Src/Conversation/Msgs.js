@@ -92,11 +92,11 @@ router.get('/:id/Likes', function(req, res) {
       var query;
 
       if (vld.check(likes.length, Tags.emptyArray, null, cb)) {
+         likeInfo = likes.map(x => x);
          prsIds = likes.map(like => like.prsId);
          query = "select id, firstName, lastName from Person where id IN ("
           + '?,'.repeat(prsIds.length).slice(0, -1) + ")";
 
-         likeInfo = likes.map(x => x);
          cnn.chkQry(query, prsIds, cb);
       }
    },

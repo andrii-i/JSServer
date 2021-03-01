@@ -1,10 +1,29 @@
 var Express = require('express');
+var Session = require('../Session.js');
 var Tags = require('../Validator.js').Tags;
 var async = require('async');
 var mysql = require('mysql');
 var router = Express.Router({caseSensitive: true});
 
 router.baseURL = '/Prss';
+
+function decrMsgLikesQry(msgIds) {
+   if (msgIds.length) {
+      return "UPDATE Message SET numLikes = numLikes - 1 WHERE id IN ("
+       + '?,'.repeat(msgIds.length).slice(0, -1) + ")";
+   } else {
+      return "SELECT 'Something sweet'";
+   }
+}
+
+function deleteLikesQry(likeIds) {
+   if (likeIds.length) {
+      return "delete from Likes where id IN ("
+       + '?,'.repeat(likeIds.length).slice(0, -1) + ")";
+   } else {
+      return "SELECT 'Something sweet'";
+   }
+}
 
 /* Much nicer versions*/
 router.get('/', function(req, res) {
@@ -152,21 +171,52 @@ router.get('/:id', function(req, res) {
 
 router.delete('/:id', function(req, res) {
    var vld = req.validator;
+   var prsnId = req.params.id;
+   var ssn = req.session;
+   var cnn = req.cnn;
+   var likeIds;
+   var msgIds;
+   var query;
 
    async.waterfall([
    function(cb) {
       if (vld.check(vld.checkAdmin(), Tags.noPermission, null, cb)) {
-         req.cnn.chkQry('DELETE from Person where id = ?', [req.params.id], cb);
+         req.cnn.chkQry('Select * from Person where id = ?', [prsnId], cb);
       }
    },
    function(result, fields, cb) {
-      if (vld.check(result.affectedRows, Tags.resourceNotFound, null, cb)) {
-         res.end();
-         cb();
+      if (vld.check(result.length, Tags.resourceNotFound, null, cb)) {
+         ssn.logOutByPrsId(prsnId);
+         req.cnn.chkQry('select * from Likes where prsId = ?', [prsnId],
+          cb);
       }
+   },
+   function(likes, fields, cb) {
+      likeIds = likes.map(x => x.id);
+      msgIds = likes.map(x => x.msgId);
+      query = decrMsgLikesQry(msgIds);
+      cnn.chkQry(query, msgIds, cb);
+   },
+   function(result, fields, cb) {
+      query = deleteLikesQry(likeIds);
+      cnn.chkQry(query, likeIds, cb);
+   },
+   function(result, fields, cb) {
+      cnn.chkQry('delete from Message where prsId = ?', [prsnId], cb);
+   },
+   function(result, fields, cb) {
+      cnn.chkQry('DELETE from Conversation where ownerId = ?', [prsnId],
+       cb);
+   },
+   function(result, fields, cb) {
+      cnn.chkQry('DELETE from Person where id = ?', [prsnId], cb);
+   },
+   function(result, fields, cb) {
+      res.status(200).end();
+      cb();
    }],
    function(err) {
-      req.cnn.release();
+      cnn.release();
    });
 });
 

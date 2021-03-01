@@ -63,6 +63,12 @@ Session.prototype.logOut = function() {
    delete ssnsByCookie[this.authToken];
 };
 
+Session.prototype.logOutByPrsId = prsId => {
+   var sessions = ssnsById.filter(ssn => parseInt(ssn.prsId, 10) === 
+    parseInt(prsId, 10));
+   sessions.forEach(ssn => ssn.logOut());
+};
+
 Session.getAllIds = () => Object.keys(ssnsById);
 Session.findById = id => ssnsById[id];
 
