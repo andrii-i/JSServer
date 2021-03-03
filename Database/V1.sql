@@ -1,6 +1,3 @@
-drop database if exists aieroshe;
-create database aieroshe;
-use aieroshe;
 
 create table Person (
    id int auto_increment primary key,

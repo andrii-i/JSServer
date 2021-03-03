@@ -69,6 +69,11 @@ Session.prototype.logOutByPrsId = prsId => {
    sessions.forEach(ssn => ssn.logOut());
 };
 
+Session.clearSsns = () => {
+   ssnsByCookie = {};
+   ssnsById = [];
+};
+
 Session.getAllIds = () => Object.keys(ssnsById);
 Session.findById = id => ssnsById[id];
 

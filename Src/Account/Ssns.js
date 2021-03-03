@@ -27,7 +27,7 @@ router.post('/', function(req, res) {
    cnn.chkQry('select * from Person where email = ?', [req.body.email],
       function(err, result) {
          if (vld.check(result.length && result[0].password ===
-          req.body.password, Tags.badLogin)) {
+          req.body.password, Tags.badLogin, null)) {
             ssn = new Session(result[0], res);
             res.location(router.baseURL + '/' + ssn.id).end();
          }

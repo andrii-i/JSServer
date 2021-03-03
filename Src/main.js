@@ -5,25 +5,21 @@ var bodyParser = require("body-parser");
 var {Session, router} = require("./Session.js");
 var Validator = require("./Validator.js");
 var CnnPool = require("./CnnPool.js");
-var async = require("async");
-// app returned by express() is in fact a JavaScript Function, designed to be 
-// passed to Node’s HTTP servers as a callback to handle requests. 
+var async = require("async"); 
 var app = express(); 
+var port = process.argv[2] === '-p' && process.argv[3] || 3000;
 
 // Static paths to be served like index.html and all client side js
 app.use(express.static(path.join(__dirname, "public")));
 
 // Partially complete handler for CORS.
-app.use(function(req, res, next) { // mounts middleware function w/o path
-                                   // would be executed for every request 
-                                   // to the app
+app.use(function(req, res, next) {
    console.log("Handling " + req.path + "/" + req.method);
    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
    res.header("Access-Control-Allow-Credentials", true);
    res.header("Access-Control-Allow-Headers", "Content-Type");
    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
    res.header("Access-Control-Expose-Headers", "Content-Type, Location");
-   //res.removeHeader("Keep-Alive"); ???
    res.header("Keep-Alive", "0");
    next();
 });
@@ -49,7 +45,7 @@ app.use(cookieParser());
 app.use(router);
 
 // Check general login.  If OK, add Validator to |req| and continue processing,
-// otherwise respond immediately with 401 and noLogin error tag.
+//  otherwise respond immediately with 401 and noLogin error tag.
 app.use(function(req, res, next) {
    if (req.session || (req.method === "POST" &&
     (req.path === "/Prss" || req.path === "/Ssns"))) {
@@ -69,11 +65,11 @@ app.use("/Cnvs", require("./Conversation/Cnvs.js"));
 app.use("/Msgs", require("./Conversation/Msgs.js"));
 
 // Special debugging route for /DB DELETE.  Clears all table contents,
-//resets all auto_increment keys to start at 1, and reinserts one admin user.
+//  resets all auto_increment keys to start at 1, and reinserts one admin user.
 app.delete("/DB", function(req, res) {
    var admin = req.session.isAdmin();
    // Callbacks to clear tables
-   var cbs = ["Message", "Conversation", "Person"].map(
+   var cbs = ["Message", "Conversation", "Person", "Likes"].map(
       table => function(cb) {
          req.cnn.query("delete from " + table, cb);
       }
@@ -81,7 +77,7 @@ app.delete("/DB", function(req, res) {
 
    // Callbacks to reset increment bases
    cbs = cbs.concat(
-      ["Conversation", "Message", "Person"].map(
+      ["Conversation", "Message", "Person", "Likes"].map(
          table => cb => {
             req.cnn.query("alter table " + table + " auto_increment = 1", cb);
          }
@@ -96,10 +92,7 @@ app.delete("/DB", function(req, res) {
 
    // Callback to clear sessions, release connection and return result
    cbs.push(cb => {
-      Session.getAllIds().forEach(id => {
-         Session.findById(id).logOut();
-         console.log("Clearing " + id);
-      });
+      Session.clearSsns();
       cb();
    });
 
@@ -130,6 +123,6 @@ app.use(function(err, req, res, next) {
    req.cnn && req.cnn.release();
 });
 
-app.listen(3000, function() {
-   console.log("App Listening on port 3000");
+app.listen(parseInt(port, 10), function() {
+   console.log("App Listening on port " + parseInt(port, 10));
 });
